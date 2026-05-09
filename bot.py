@@ -111,4 +111,4 @@ async def clear(interaction: discord.Interaction, amount: int):
         )
 
 # RUN BOT
-bot.run("PASTE_YOUR_BOT_TOKEN_HERE")
+bot.run("MTQ0MTEwNzk5MDY4OTM0OTY5Mw.GsPzDm.c6sg1oadTx50_PLlYbigQbfy9RYv3Y65wRZDF0")
