@@ -39,7 +39,7 @@ async def on_member_join(member):
 async def on_message(message):
 
     if message.author.bot:
-    return
+        return
 
     if "hello" in message.content.lower():
         await message.channel.send("Hey 👋")
