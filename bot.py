@@ -14,7 +14,7 @@ intents.message_content = True
 intents.members = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
-
+    
 # Bot Ready
 @bot.event
 async def on_ready():
@@ -46,6 +46,11 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
+# PING COMMAND
+@bot.command()
+async def ping(ctx):
+    await ctx.send("Pong! 🏓")
+    
 # BAN COMMAND
 @bot.tree.command(name="ban", description="Ban a member")
 @app_commands.describe(member="Member to ban")
