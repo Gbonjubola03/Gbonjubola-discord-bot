@@ -26,13 +26,22 @@ async def on_ready():
     except Exception as e:
         print(e)
 
+# Welcome Channel Set
+@bot.tree.command(name="setwelcome")
+async def setwelcome(interaction: discord.Interaction, channel: discord.TextChannel):
+    bot.welcome_channel_id = channel.id
+    await interaction.response.send_message(f"Welcome channel set to {channel.mention}")
+
 # Welcome Message
 @bot.event
 async def on_member_join(member):
-    channel = member.guild.system_channel
-    
+    channel_id = getattr(bot, "welcome_channel_id", None)
+    if channel_id is None:
+        return
+
+    channel = bot.get_channel(channel_id)
     if channel:
-        await channel.send(f"Welcome {member.mention} to the server 🎉")
+        await channel.send(f"Welcome to the server, {member.mention} 🎉")
 
 # Auto Reply
 @bot.event
