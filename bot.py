@@ -2,6 +2,12 @@ import discord
 import datetime
 from discord.ext import commands
 from discord import app_commands
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+TOKEN = os.getenv("TOKEN")
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -32,8 +38,8 @@ async def on_member_join(member):
 @bot.event
 async def on_message(message):
 
-    if message.author == bot.user:
-        return
+    if message.author.bot:
+    return
 
     if "hello" in message.content.lower():
         await message.channel.send("Hey 👋")
@@ -110,5 +116,10 @@ async def clear(interaction: discord.Interaction, amount: int):
             ephemeral=True
         )
 
+# FAIL NOTIFICATION 
+
+if TOKEN is None:
+    print("ERROR: TOKEN not found in environment variables!")
+
 # RUN BOT
-bot.run("MTQ0MTEwNzk5MDY4OTM0OTY5Mw.GsPzDm.c6sg1oadTx50_PLlYbigQbfy9RYv3Y65wRZDF0")
+bot.run(TOKEN)
