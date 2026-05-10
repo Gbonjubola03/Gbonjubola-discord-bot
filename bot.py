@@ -280,7 +280,6 @@ async def log_action(
     guild: discord.Guild,
     title: str,
     description: str,
-    color: discord.Color,
     moderator: discord.Member,
     target: discord.Member | None = None,
     reason: str | None = None,
