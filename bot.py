@@ -463,7 +463,159 @@ async def unlock(interaction: discord.Interaction):
     if not can_use_bot(interaction.user): return
     await interaction.channel.set_permissions(interaction.guild.default_role, send_messages=True)
     await interaction.response.send_message("🔓 Channel unlocked.")
+    
+@bot.command()
+async def ping(ctx):
+    await ctx.send("Pong! 🏓")
 
+
+# BAN COMMAND
+@bot.tree.command(name="ban", description="Ban a member")
+@app_commands.describe(member="Member to ban")
+async def ban(interaction: discord.Interaction, member: discord.Member):
+
+    if not interaction.user.guild_permissions.ban_members:
+        return await interaction.response.send_message(
+            "You don't have permission.",
+            ephemeral=True
+        )
+
+    # Prevent banning yourself
+    if member == interaction.user:
+        return await interaction.response.send_message(
+            "You cannot ban yourself.",
+            ephemeral=True
+        )
+
+    # Prevent banning the bot
+    if member == interaction.guild.me:
+        return await interaction.response.send_message(
+            "You cannot ban the bot.",
+            ephemeral=True
+        )
+
+    # Role hierarchy protection
+    if member.top_role >= interaction.user.top_role:
+        return await interaction.response.send_message(
+            "You cannot ban someone with an equal or higher role than you.",
+            ephemeral=True
+        )
+
+    await member.ban(reason=f"Banned by {interaction.user}")
+
+    await interaction.response.send_message(
+        f"{member.mention} has been banned."
+    )
+
+
+# KICK COMMAND
+@bot.tree.command(name="kick", description="Kick a member")
+@app_commands.describe(member="Member to kick")
+async def kick(interaction: discord.Interaction, member: discord.Member):
+
+    if not interaction.user.guild_permissions.kick_members:
+        return await interaction.response.send_message(
+            "You don't have permission.",
+            ephemeral=True
+        )
+
+    # Prevent kicking yourself
+    if member == interaction.user:
+        return await interaction.response.send_message(
+            "You cannot kick yourself.",
+            ephemeral=True
+        )
+
+    # Prevent kicking the bot
+    if member == interaction.guild.me:
+        return await interaction.response.send_message(
+            "You cannot kick the bot.",
+            ephemeral=True
+        )
+
+    # Role hierarchy protection
+    if member.top_role >= interaction.user.top_role:
+        return await interaction.response.send_message(
+            "You cannot kick someone with an equal or higher role than you.",
+            ephemeral=True
+        )
+
+    await member.kick(reason=f"Kicked by {interaction.user}")
+
+    await interaction.response.send_message(
+        f"{member.mention} has been kicked."
+    )
+
+
+# TIMEOUT COMMAND
+@bot.tree.command(name="timeout", description="Timeout a member")
+@app_commands.describe(
+    member="Member to timeout",
+    minutes="How long the timeout should last"
+)
+async def timeout(
+    interaction: discord.Interaction,
+    member: discord.Member,
+    minutes: int
+):
+
+    if not interaction.user.guild_permissions.moderate_members:
+        return await interaction.response.send_message(
+            "You don't have permission.",
+            ephemeral=True
+        )
+
+    # Prevent timing out yourself
+    if member == interaction.user:
+        return await interaction.response.send_message(
+            "You cannot timeout yourself.",
+            ephemeral=True
+        )
+
+    # Prevent timing out the bot
+    if member == interaction.guild.me:
+        return await interaction.response.send_message(
+            "You cannot timeout the bot.",
+            ephemeral=True
+        )
+
+    # Role hierarchy protection
+    if member.top_role >= interaction.user.top_role:
+        return await interaction.response.send_message(
+            "You cannot timeout someone with an equal or higher role than you.",
+            ephemeral=True
+        )
+
+    duration = datetime.timedelta(minutes=minutes)
+
+    await member.timeout(
+        duration,
+        reason=f"Timed out by {interaction.user}"
+    )
+
+    await interaction.response.send_message(
+        f"{member.mention} has been timed out for {minutes} minute(s)."
+    )
+
+
+# CLEAR COMMAND
+@bot.tree.command(name="clear", description="Delete messages")
+@app_commands.describe(amount="Number of messages to delete")
+async def clear(interaction: discord.Interaction, amount: int):
+
+    if not interaction.user.guild_permissions.manage_messages:
+        return await interaction.response.send_message(
+            "You don't have permission.",
+            ephemeral=True
+        )
+
+    await interaction.channel.purge(limit=amount)
+
+    await interaction.response.send_message(
+        f"Deleted {amount} messages.",
+        ephemeral=True
+    )
+    
 if TOKEN:
     bot.run(TOKEN)
 else:
