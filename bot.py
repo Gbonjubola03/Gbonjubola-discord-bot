@@ -144,7 +144,41 @@ async def addallowedrole(interaction: discord.Interaction, role: discord.Role):
         settings[guild_id]["allowed_roles"].append(role.id)
         save_settings(settings)
     await interaction.response.send_message(f"✅ {role.mention} added to allowed roles.")
+    
+@bot.tree.command(name="removeallowedrole", description="Remove allowed role")
+async def removeallowedrole(interaction: discord.Interaction, role: discord.Role):
 
+    if not interaction.user.guild_permissions.administrator:
+        return await interaction.response.send_message("Admin only.", ephemeral=True)
+
+    settings = load_settings()
+    guild_id = str(interaction.guild.id)
+
+    # ensure guild exists
+    if guild_id not in settings:
+        settings[guild_id] = {
+            "allowed_roles": [],
+            "blacklisted_roles": []
+        }
+
+    # ensure key exists
+    if "allowed_roles" not in settings[guild_id]:
+        settings[guild_id]["allowed_roles"] = []
+
+    # remove role safely
+    if role.id in settings[guild_id]["allowed_roles"]:
+        settings[guild_id]["allowed_roles"].remove(role.id)
+        save_settings(settings)
+
+        await interaction.response.send_message(
+            f"❌ {role.mention} removed from allowed roles."
+        )
+    else:
+        await interaction.response.send_message(
+            f"⚠️ {role.mention} is not in allowed roles.",
+            ephemeral=True
+        )
+        
 @bot.tree.command(name="warn", description="Warn a member")
 @app_commands.checks.has_permissions(moderate_members=True)
 async def warn(interaction: discord.Interaction, member: discord.Member, reason: str):
