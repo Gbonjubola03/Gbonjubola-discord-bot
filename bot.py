@@ -302,10 +302,10 @@ async def warn(interaction: discord.Interaction, member: discord.Member, reason:
     count = warns_data[guild_id][user_id]
 
     await interaction.response.send_message(f"⚠️ {member.mention} warned. Reason: {reason} (Warns: {count})")
-    await log_action(guild = interaction.guild, title = "⚠️ Member Warned", description = "A member has received a warning.", color = discord.Color.orange(), moderator = interaction.user, target = member, reason = reason, action_taken = f "User now has {count} warning(s)")
+    await log_action(guild = interaction.guild, title = "⚠️ Member Warned", description = "A member has received a warning.", color = discord.Color.orange(), moderator = interaction.user, target = member, reason = reason, action_taken = f"User now has {count} warning(s)")
     
     await log_action(interaction.guild, "⚠️ Member Warned", f"User warned for {reason}", discord.Color.orange(), interaction.user, member, reason, f"Total warns: {count}")
-    await log_action(guild = interaction.guild, title = "⚠️ Member Warned", description = "A member has received a warning.", color = discord.Color.orange(), moderator = interaction.user, target = member, reason = reason, action_taken = f "User now has {count} warning(s)")
+    await log_action(guild = interaction.guild, title = "⚠️ Member Warned", description = "A member has received a warning.", color = discord.Color.orange(), moderator = interaction.user, target = member, reason = reason, action_taken = f"User now has {count} warning(s)")
 
     if count == 3:
         await member.timeout(timedelta(minutes=10), reason="3 Warnings")
