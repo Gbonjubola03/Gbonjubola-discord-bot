@@ -472,6 +472,41 @@ async def ping(ctx):
 # BAN COMMAND
 @bot.tree.command(name="ban", description="Ban a member")
 @app_commands.describe(member="Member to ban")
+async def log_action(
+    guild: discord.Guild,
+    title: str,
+    description: str,
+    moderator: discord.Member,
+    target: discord.Member | None = None,
+    reason: str | None = None,
+    action_taken: str | None = None
+):
+    settings = get_guild_settings(guild.id)
+    channel_id = settings.get("log_channel")
+    if not channel_id:
+        return
+
+    channel = guild.get_channel(channel_id)
+    if not channel:
+        return
+
+    embed = discord.Embed(
+        title=title,
+        description=description,
+        color=color,
+        timestamp=datetime.datetime.now(datetime.timezone.utc)
+    )
+
+    embed.add_field(name="Moderator", value=moderator.mention, inline=False)
+
+    if target:
+        embed.add_field(name="Target", value=target.mention, inline=False)
+    if reason:
+        embed.add_field(name="Reason", value=reason, inline=False)
+    if action_taken:
+        embed.add_field(name="Action", value=action_taken, inline=False)
+
+    await channel.send(embed=embed)
 async def ban(interaction: discord.Interaction, member: discord.Member):
 
     if not interaction.user.guild_permissions.ban_members:
@@ -506,11 +541,47 @@ async def ban(interaction: discord.Interaction, member: discord.Member):
     await interaction.response.send_message(
         f"{member.mention} has been banned."
     )
+    await log_action(guild = interaction.guild, title = "🔨 Member Banned", description = "User banned by admin", color = discord.Color.dark_red(), moderator = interaction.user, target = member, reason = "No Reason given", action_taken = "User was permanently banned")
 
 
 # KICK COMMAND
 @bot.tree.command(name="kick", description="Kick a member")
 @app_commands.describe(member="Member to kick")
+async def log_action(
+    guild: discord.Guild,
+    title: str,
+    description: str,
+    moderator: discord.Member,
+    target: discord.Member | None = None,
+    reason: str | None = None,
+    action_taken: str | None = None
+):
+    settings = get_guild_settings(guild.id)
+    channel_id = settings.get("log_channel")
+    if not channel_id:
+        return
+
+    channel = guild.get_channel(channel_id)
+    if not channel:
+        return
+
+    embed = discord.Embed(
+        title=title,
+        description=description,
+        color=color,
+        timestamp=datetime.datetime.now(datetime.timezone.utc)
+    )
+
+    embed.add_field(name="Moderator", value=moderator.mention, inline=False)
+
+    if target:
+        embed.add_field(name="Target", value=target.mention, inline=False)
+    if reason:
+        embed.add_field(name="Reason", value=reason, inline=False)
+    if action_taken:
+        embed.add_field(name="Action", value=action_taken, inline=False)
+
+    await channel.send(embed=embed)
 async def kick(interaction: discord.Interaction, member: discord.Member):
 
     if not interaction.user.guild_permissions.kick_members:
@@ -553,6 +624,41 @@ async def kick(interaction: discord.Interaction, member: discord.Member):
     member="Member to timeout",
     minutes="How long the timeout should last"
 )
+async def log_action(
+    guild: discord.Guild,
+    title: str,
+    description: str,
+    moderator: discord.Member,
+    target: discord.Member | None = None,
+    reason: str | None = None,
+    action_taken: str | None = None
+):
+    settings = get_guild_settings(guild.id)
+    channel_id = settings.get("log_channel")
+    if not channel_id:
+        return
+
+    channel = guild.get_channel(channel_id)
+    if not channel:
+        return
+
+    embed = discord.Embed(
+        title=title,
+        description=description,
+        color=color,
+        timestamp=datetime.datetime.now(datetime.timezone.utc)
+    )
+
+    embed.add_field(name="Moderator", value=moderator.mention, inline=False)
+
+    if target:
+        embed.add_field(name="Target", value=target.mention, inline=False)
+    if reason:
+        embed.add_field(name="Reason", value=reason, inline=False)
+    if action_taken:
+        embed.add_field(name="Action", value=action_taken, inline=False)
+
+    await channel.send(embed=embed)
 async def timeout(
     interaction: discord.Interaction,
     member: discord.Member,
@@ -596,6 +702,7 @@ async def timeout(
     await interaction.response.send_message(
         f"{member.mention} has been timed out for {minutes} minute(s)."
     )
+    await log_action(guild = interaction.guild, title = "⏳ Member Timed Out", description = "User was timed out by admin", color = discord.Color.yellow(), moderator = interaction.user, target = member, reason = "No reason given", action_taken = f"{member.mention} has been timed out for {minutes} minute(s)."
 
 
 # CLEAR COMMAND
