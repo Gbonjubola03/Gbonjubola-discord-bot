@@ -234,6 +234,46 @@ async def toggleautomod(
         f"✅ {feature} changed from `{old_value}` → `{state}`"
     )
     
+@bot.tree.command(name="userinfo", description="View user info")
+@app_commands.describe(member="Select member")
+async def userinfo(interaction: discord.Interaction, member: discord.Member):
+
+    embed = discord.Embed(
+        title=f"{member.name}'s Info",
+        color=discord.Color.green()
+    )
+
+    embed.set_thumbnail(url=member.display_avatar.url)
+
+    joined = member.joined_at.strftime("%Y-%m-%d") if member.joined_at else "Unknown"
+
+    embed.add_field(name="ID", value=str(member.id), inline=True)
+    embed.add_field(name="Joined Server", value=joined, inline=True)
+    embed.add_field(name="Account Created", value=member.created_at.strftime("%Y-%m-%d"), inline=True)
+
+    await interaction.response.send_message(embed=embed)
+    
+@bot.tree.command(name="serverinfo", description="View server info")
+async def serverinfo(interaction: discord.Interaction):
+
+    guild = interaction.guild
+
+    embed = discord.Embed(
+        title=guild.name,
+        color=discord.Color.orange()
+    )
+
+    if guild.icon:
+        embed.set_thumbnail(url=guild.icon.url)
+
+    owner = guild.owner.mention if guild.owner else "Unknown"
+
+    embed.add_field(name="Owner", value=owner, inline=True)
+    embed.add_field(name="Members", value=guild.member_count, inline=True)
+    embed.add_field(name="Channels", value=len(guild.channels), inline=True)
+
+    await interaction.response.send_message(embed=embed)
+    
 @bot.tree.command(name="warn", description="Warn a member")
 @app_commands.checks.has_permissions(moderate_members=True)
 async def warn(interaction: discord.Interaction, member: discord.Member, reason: str):
