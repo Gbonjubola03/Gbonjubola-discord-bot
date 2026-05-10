@@ -179,6 +179,65 @@ async def removeallowedrole(interaction: discord.Interaction, role: discord.Role
             ephemeral=True
         )
         
+        @bot.tree.command(name="toggleautomod", description="Enable or disable automod")
+@app_commands.describe(
+    feature="Feature name",
+    state="true or false"
+)
+async def toggleautomod(
+    interaction: discord.Interaction,
+    feature: str,
+    state: bool
+):
+
+    if not interaction.user.guild_permissions.administrator:
+        return await interaction.response.send_message(
+            "Administrator only.",
+            ephemeral=True
+        )
+
+    settings = load_settings()
+    guild_id = str(interaction.guild.id)
+
+    # ensure guild exists
+    if guild_id not in settings:
+        settings[guild_id] = {
+            "allowed_roles": [],
+            "blacklisted_roles": [],
+            "anti_link": True,
+            "anti_invite": True,
+            "anti_swear": True,
+            "anti_caps": True,
+            "anti_emoji": True,
+            "anti_mass_mention": True,
+            "anti_token": True
+        }
+
+    valid_features = [
+        "anti_link",
+        "anti_invite",
+        "anti_swear",
+        "anti_caps",
+        "anti_emoji",
+        "anti_mass_mention",
+        "anti_token"
+    ]
+
+    if feature not in valid_features:
+        return await interaction.response.send_message(
+            "❌ Invalid feature name.",
+            ephemeral=True
+        )
+
+    old_value = settings[guild_id].get(feature, False)
+
+    settings[guild_id][feature] = state
+    save_settings(settings)
+
+    await interaction.response.send_message(
+        f"✅ {feature} changed from `{old_value}` → `{state}`"
+    )
+    
 @bot.tree.command(name="warn", description="Warn a member")
 @app_commands.checks.has_permissions(moderate_members=True)
 async def warn(interaction: discord.Interaction, member: discord.Member, reason: str):
