@@ -276,6 +276,20 @@ async def serverinfo(interaction: discord.Interaction):
     
 @bot.tree.command(name="warn", description="Warn a member")
 @app_commands.checks.has_permissions(moderate_members=True)
+async def log_action(guild, title, description, color, moderator, target=None, reason=None, action_taken=None):
+    settings = get_guild_settings(guild.id)
+    channel_id = settings.get("log_channel")
+    if not channel_id:
+        return
+    channel = guild.get_channel(channel_id)
+    if channel:
+        embed = discord.Embed(title=title, description=description, color=color, timestamp=datetime.datetime.now())
+        embed.add_field(name="Moderator", value=moderator.mention)
+        if target: embed.add_field(name="Target", value=target.mention)
+        if reason: embed.add_field(name="Reason", value=reason)
+        if action_taken: embed.add_field(name="Action", value=action_taken)
+        await channel.send(embed=embed)
+        
 async def warn(interaction: discord.Interaction, member: discord.Member, reason: str):
     if not can_use_bot(interaction.user):
         return await interaction.response.send_message("❌ No permission.", ephemeral=True)
@@ -316,20 +330,6 @@ INVITE_REGEX = r"(discord\.gg\/|discord\.com\/invite\/)"
 TOKEN_REGEX = r"[\w-]{24}\.[\w-]{6}\.[\w-]{27}"
 BAD_WORDS = ["fuck", "bitch", "nigga", "shit"]
 user_violations = {}
-
-async def log_action(guild, title, description, color, moderator, target=None, reason=None, action_taken=None):
-    settings = get_guild_settings(guild.id)
-    channel_id = settings.get("log_channel")
-    if not channel_id:
-        return
-    channel = guild.get_channel(channel_id)
-    if channel:
-        embed = discord.Embed(title=title, description=description, color=color, timestamp=datetime.datetime.now())
-        embed.add_field(name="Moderator", value=moderator.mention)
-        if target: embed.add_field(name="Target", value=target.mention)
-        if reason: embed.add_field(name="Reason", value=reason)
-        if action_taken: embed.add_field(name="Action", value=action_taken)
-        await channel.send(embed=embed)
         
 async def handle_violation(message, reason):
     user_id = str(message.author.id)
