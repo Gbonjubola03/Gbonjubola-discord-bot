@@ -288,18 +288,24 @@ async def warn(interaction: discord.Interaction, member: discord.Member, reason:
     count = warns_data[guild_id][user_id]
 
     await interaction.response.send_message(f"⚠️ {member.mention} warned. Reason: {reason} (Warns: {count})")
+    await log_action(guild = interaction.guild, title = "⚠️ Member Warned", description = "A member has received a warning.", color = discord.Color.orange(), moderator = interaction.user, target = member, reason = reason, action_taken = f "User now has {count} warning(s)")
     
     await log_action(interaction.guild, "⚠️ Member Warned", f"User warned for {reason}", discord.Color.orange(), interaction.user, member, reason, f"Total warns: {count}")
+    await log_action(guild = interaction.guild, title = "⚠️ Member Warned", description = "A member has received a warning.", color = discord.Color.orange(), moderator = interaction.user, target = member, reason = reason, action_taken = f "User now has {count} warning(s)")
 
     if count == 3:
         await member.timeout(timedelta(minutes=10), reason="3 Warnings")
         await interaction.followup.send(f"⏳ {member.mention} timed out (3 warns).")
+        await log_action(guild = interaction.guild, title = "⏳ Member Timed Out", description = "User reached warning limit.", color = discord.Color.yellow(), moderator = interaction.user, target = member, reason = "Reached 3 warnings", action_taken = "Timed out for 10 minutes"
+)
     elif count == 5:
         await member.kick(reason="5 Warnings")
         await interaction.followup.send(f"👢 {member.mention} kicked (5 warns).")
+        await log_action(guild = interaction.guild, title = "👢 Member Kicked", description = "User exceeded warning limit.", color = discord.Color.red(), moderator = interaction.user, target = member, reason = "Reached 5 warnings", action_taken = "User was kicked")
     elif count >= 7:
         await member.ban(reason="7 Warnings")
         await interaction.followup.send(f"🔨 {member.mention} banned (7+ warns).")
+        await log_action(guild = interaction.guild, title = "🔨 Member Banned", description = "User exceeded warning limit.", color = discord.Color.dark_red(), moderator = interaction.user, target = member, reason = "Reached 7 warnings", action_taken = "User was permanently banned")
 
 # =========================
 # AUTOMOD LOGIC
