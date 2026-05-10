@@ -262,9 +262,11 @@ async def addallowedrole(
 get_guild_settings(interaction.guild.id)
 settings = load_settings()
 
-    if role.id not in settings[guild_id]["allowed_roles"]:
-        settings[guild_id]["allowed_roles"].append(role.id)
+settings.setdefault(guild_id, {"allowed_roles": []})
 
+if role.id not in settings[guild_id].get("allowed_roles", []):
+    settings[guild_id]["allowed_roles"].append(role.id)
+    
     save_settings(settings)
 
     await interaction.response.send_message(
