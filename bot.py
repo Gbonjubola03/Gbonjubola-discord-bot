@@ -179,11 +179,7 @@ async def removeallowedrole(interaction: discord.Interaction, role: discord.Role
             ephemeral=True
         )
         
-        @bot.tree.command(name="toggleautomod", description="Enable or disable automod")
-@app_commands.describe(
-    feature="Feature name",
-    state="true or false"
-)
+@bot.tree.command(name="toggleautomod", description="Enable or disable automod")
 async def toggleautomod(
     interaction: discord.Interaction,
     feature: str,
