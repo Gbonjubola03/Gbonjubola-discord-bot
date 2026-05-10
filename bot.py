@@ -352,7 +352,43 @@ INVITE_REGEX = r"(discord\.gg\/|discord\.com\/invite\/)"
 TOKEN_REGEX = r"[\w-]{24}\.[\w-]{6}\.[\w-]{27}"
 BAD_WORDS = ["fuck", "bitch", "nigga", "shit"]
 user_violations = {}
-        
+
+async def log_action(
+    guild: discord.Guild,
+    title: str,
+    description: str,
+    moderator: discord.Member,
+    target: discord.Member | None = None,
+    reason: str | None = None,
+    action_taken: str | None = None
+):
+    settings = get_guild_settings(guild.id)
+    channel_id = settings.get("log_channel")
+    if not channel_id:
+        return
+
+    channel = guild.get_channel(channel_id)
+    if not channel:
+        return
+
+    embed = discord.Embed(
+        title=title,
+        description=description,
+        color=color,
+        timestamp=datetime.datetime.now(datetime.timezone.utc)
+    )
+
+    embed.add_field(name="Moderator", value=moderator.mention, inline=False)
+
+    if target:
+        embed.add_field(name="Target", value=target.mention, inline=False)
+    if reason:
+        embed.add_field(name="Reason", value=reason, inline=False)
+    if action_taken:
+        embed.add_field(name="Action", value=action_taken, inline=False)
+
+    await channel.send(embed=embed)
+    
 async def handle_violation(message, reason):
     user_id = str(message.author.id)
     user_violations[user_id] = user_violations.get(user_id, 0) + 1
@@ -380,12 +416,14 @@ async def on_message(message):
     if guild_data["anti_link"] and re.search(URL_REGEX, message.content):
         if not any(inv.code in message.content for inv in await message.guild.invites()):
             await handle_violation(message, "External links not allowed")
+            await log_action(guild = message.guild, title = "🔗 Unauthorized Link Detected", description = "A user sent a link not associated with this server.", color = discord.Color.red(), moderator = bot.user, target = message.author, reason = "Unauthorized external link", action_taken = "Message deleted + 10 minute timeout")
             return
 
     # Anti-Swear
     if guild_data["anti_swear"]:
         if any(word in message.content.lower().split() for word in BAD_WORDS):
             await handle_violation(message, "Swearing")
+            await log_action(guild = message.guild, title = "🤬 Swear Detection", description = "Auto moderation detected profanity.", color = discord.Color.orange(), moderator = bot.user, target = message.author, reason = "Swearing detected", action_taken = "Warning issued")
             return
 
     # Anti-Caps
@@ -393,7 +431,14 @@ async def on_message(message):
         if sum(1 for c in message.content if c.isupper()) >= len(message.content) * 0.7:
             await handle_violation(message, "Excessive Caps")
             return
+            
+    # Anti-Token
+    if guild_data["anti_token"]:
 
+        if re.search(TOKEN_REGEX, message.content):
+            await handle_violation(message, "Possible token/logger detected")
+            return
+            
     await bot.process_commands(message)
 
 # =========================
