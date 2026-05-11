@@ -688,24 +688,29 @@ async def ping(ctx):
     await ctx.send("Pong! 🏓")
 
 
-# BAN COMMAND
-@bot.tree.command(name="ban", description="Ban a member")
-@app_commands.describe(member="Member to ban")
+# ==========================================
+# LOG ACTION FUNCTION
+# ==========================================
+
 async def log_action(
     guild: discord.Guild,
     title: str,
     description: str,
+    color: discord.Color,
     moderator: discord.Member,
     target: discord.Member | None = None,
     reason: str | None = None,
     action_taken: str | None = None
 ):
+
     settings = get_guild_settings(guild.id)
     channel_id = settings.get("log_channel")
+
     if not channel_id:
         return
 
     channel = guild.get_channel(channel_id)
+
     if not channel:
         return
 
@@ -716,16 +721,41 @@ async def log_action(
         timestamp=datetime.datetime.now(datetime.timezone.utc)
     )
 
-    embed.add_field(name="Moderator", value=moderator.mention, inline=False)
+    embed.add_field(
+        name="Moderator",
+        value=moderator.mention,
+        inline=False
+    )
 
     if target:
-        embed.add_field(name="Target", value=target.mention, inline=False)
+        embed.add_field(
+            name="Target",
+            value=target.mention,
+            inline=False
+        )
+
     if reason:
-        embed.add_field(name="Reason", value=reason, inline=False)
+        embed.add_field(
+            name="Reason",
+            value=reason,
+            inline=False
+        )
+
     if action_taken:
-        embed.add_field(name="Action", value=action_taken, inline=False)
+        embed.add_field(
+            name="Action Taken",
+            value=action_taken,
+            inline=False
+        )
 
     await channel.send(embed=embed)
+
+# ==========================================
+# BAN COMMAND
+# ==========================================
+
+@bot.tree.command(name="ban", description="Ban a member")
+@app_commands.describe(member="Member to ban")
 async def ban(interaction: discord.Interaction, member: discord.Member):
 
     if not interaction.user.guild_permissions.ban_members:
@@ -734,35 +764,53 @@ async def ban(interaction: discord.Interaction, member: discord.Member):
             ephemeral=True
         )
 
-    # Prevent banning yourself
+    # prevent self-ban
     if member == interaction.user:
         return await interaction.response.send_message(
             "You cannot ban yourself.",
             ephemeral=True
         )
 
-    # Prevent banning the bot
+    # prevent banning bot
     if member == interaction.guild.me:
         return await interaction.response.send_message(
             "You cannot ban the bot.",
             ephemeral=True
         )
 
-    # Role hierarchy protection
+    # role hierarchy
     if member.top_role >= interaction.user.top_role:
         return await interaction.response.send_message(
-            "You cannot ban someone with an equal or higher role than you.",
+            "You cannot ban someone with an equal or higher role.",
             ephemeral=True
         )
 
-    await member.ban(reason=f"Banned by {interaction.user}")
+    # bot hierarchy
+    if member.top_role >= interaction.guild.me.top_role:
+        return await interaction.response.send_message(
+            "My role is not high enough to ban this member.",
+            ephemeral=True
+        )
+
+    await member.ban(
+        reason=f"Banned by {interaction.user}"
+    )
 
     await interaction.response.send_message(
-        f"{member.mention} has been banned."
+        f"🔨 {member.mention} has been banned."
     )
-    await log_action(guild = interaction.guild, title = "🔨 Member Banned", description = "User banned by admin", color = discord.Color.dark_red(), moderator = interaction.user, target = member, reason = "No Reason given", action_taken = "User was permanently banned")
 
-
+    await log_action(
+        guild=interaction.guild,
+        title="🔨 Member Banned",
+        description="User banned by admin.",
+        color=discord.Color.dark_red(),
+        moderator=interaction.user,
+        target=member,
+        reason="No reason given",
+        action_taken="User permanently banned"
+    )
+    
 # KICK COMMAND
 @bot.tree.command(name="kick", description="Kick a member")
 @app_commands.describe(member="Member to kick")
