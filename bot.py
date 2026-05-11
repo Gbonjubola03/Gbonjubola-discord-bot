@@ -856,41 +856,6 @@ async def kick(interaction: discord.Interaction, member: discord.Member):
     member="Member to timeout",
     minutes="How long the timeout should last"
 )
-async def log_action(
-    guild: discord.Guild,
-    title: str,
-    description: str,
-    moderator: discord.Member,
-    target: discord.Member | None = None,
-    reason: str | None = None,
-    action_taken: str | None = None
-):
-    settings = get_guild_settings(guild.id)
-    channel_id = settings.get("log_channel")
-    if not channel_id:
-        return
-
-    channel = guild.get_channel(channel_id)
-    if not channel:
-        return
-
-    embed = discord.Embed(
-        title=title,
-        description=description,
-        color=color,
-        timestamp=datetime.datetime.now(datetime.timezone.utc)
-    )
-
-    embed.add_field(name="Moderator", value=moderator.mention, inline=False)
-
-    if target:
-        embed.add_field(name="Target", value=target.mention, inline=False)
-    if reason:
-        embed.add_field(name="Reason", value=reason, inline=False)
-    if action_taken:
-        embed.add_field(name="Action", value=action_taken, inline=False)
-
-    await channel.send(embed=embed)
 async def timeout(
     interaction: discord.Interaction,
     member: discord.Member,
