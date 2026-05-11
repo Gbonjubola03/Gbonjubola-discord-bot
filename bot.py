@@ -882,13 +882,6 @@ async def timeout(
             ephemeral=True
         )
 
-    # Role hierarchy protection
-    if member.top_role >= interaction.user.top_role:
-        return await interaction.response.send_message(
-            "You cannot timeout someone with an equal or higher role than you.",
-            ephemeral=True
-        )
-
     duration = datetime.timedelta(minutes=minutes)
 
     await member.timeout(
