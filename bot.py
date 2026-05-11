@@ -404,223 +404,232 @@ async def handle_violation(message, reason):
 
 @bot.event
 async def on_message(message):
-    if not message.guild or message.author.bot: return
-    
-    # Auto reply example
 
-msg = message.content.lower()
+    # Ignore DMs and bots
+    if not message.guild or message.author.bot:
+        return
 
-if msg in ["hello", "hi", "hey", "yo", "sup", "hola"]:
-    await message.channel.send(
-        f"Hey {message.author.mention} 👋 How are you doing?"
-    )
+    # ==========================================
+    # AUTO REPLIES
+    # ==========================================
 
-elif msg in ["how are you", "how are you doing", "wyd"]:
-    await message.channel.send(
-        f"I'm doing great {message.author.mention} 😄 What about you?"
-    )
+    msg = message.content.lower()
 
-elif msg in ["good morning", "morning"]:
-    await message.channel.send(
-        f"Good morning {message.author.mention} ☀️ Hope your day goes well!"
-    )
+    if msg in ["hello", "hi", "hey", "yo", "sup", "hola"]:
+        await message.channel.send(
+            f"Hey {message.author.mention} 👋 How are you doing?"
+        )
 
-elif msg in ["good afternoon", "afternoon"]:
-    await message.channel.send(
-        f"Good afternoon {message.author.mention} 😎"
-    )
+    elif msg in ["how are you", "how are you doing", "wyd"]:
+        await message.channel.send(
+            f"I'm doing great {message.author.mention} 😄 What about you?"
+        )
 
-elif msg in ["good evening", "evening"]:
-    await message.channel.send(
-        f"Good evening {message.author.mention} 🌙"
-    )
+    elif msg in ["good morning", "morning"]:
+        await message.channel.send(
+            f"Good morning {message.author.mention} ☀️ Hope your day goes well!"
+        )
 
-elif msg in ["good night", "night"]:
-    await message.channel.send(
-        f"Good night {message.author.mention} 😴 Sleep well!"
-    )
+    elif msg in ["good afternoon", "afternoon"]:
+        await message.channel.send(
+            f"Good afternoon {message.author.mention} 😎"
+        )
 
-elif msg in ["bye", "goodbye", "see ya", "cya"]:
-    await message.channel.send(
-        f"See you later {message.author.mention} 👋"
-    )
+    elif msg in ["good evening", "evening"]:
+        await message.channel.send(
+            f"Good evening {message.author.mention} 🌙"
+        )
 
-elif msg in ["thanks", "thank you", "ty"]:
-    await message.channel.send(
-        f"You're welcome {message.author.mention} ❤️"
-    )
+    elif msg in ["good night", "night"]:
+        await message.channel.send(
+            f"Good night {message.author.mention} 😴 Sleep well!"
+        )
 
-elif msg in ["lol", "lmao", "haha", "wahala", "xd"]:
-    await message.channel.send(
-        f"{message.author.mention} 😂"
-    )
+    elif msg in ["bye", "goodbye", "see ya", "cya"]:
+        await message.channel.send(
+            f"See you later {message.author.mention} 👋"
+        )
 
-elif msg in ["who made you", "who created you"]:
-    await message.channel.send(
-        f"I was created by my awesome developer GbonjuBola😎"
-    )
+    elif msg in ["thanks", "thank you", "ty"]:
+        await message.channel.send(
+            f"You're welcome {message.author.mention} ❤️"
+        )
 
-elif msg in ["what can you do", "help"]:
-    await message.channel.send(
-        f"{message.author.mention} I can moderate servers, respond to messages, log actions, and more 🚀"
-    )
+    elif msg in ["lol", "lmao", "haha", "wahala", "xd"]:
+        await message.channel.send(
+            f"{message.author.mention} 😂"
+        )
 
-elif msg in ["i love you", "love you"]:
-    await message.channel.send(
-        f"Aww ❤️ I love you too {message.author.mention}"
-    )
+    elif msg in ["who made you", "who created you"]:
+        await message.channel.send(
+            "I was created by my awesome developer GbonjuBola 😎"
+        )
 
-elif msg in ["ping"]:
-    await message.channel.send(
-        f"Pong 🏓 {round(bot.latency * 1000)}ms"
-    )
+    elif msg in ["what can you do", "help"]:
+        await message.channel.send(
+            f"{message.author.mention} I can moderate servers, respond to messages, log actions, and more 🚀"
+        )
 
-elif msg in ["bruh"]:
-    await message.channel.send(
-        f"{message.author.mention} 💀"
-    )
+    elif msg in ["i love you", "love you"]:
+        await message.channel.send(
+            f"Aww ❤️ I love you too {message.author.mention}"
+        )
 
-elif msg in ["damn"]:
-    await message.channel.send(
-        f"Calm down there {message.author.mention} 😂"
-    )
+    elif msg == "ping":
+        await message.channel.send(
+            f"Pong 🏓 {round(bot.latency * 1000)}ms"
+        )
 
-elif msg in ["bot"]:
-    await message.channel.send(
-        f"Yes {message.author.mention}? 🤖"
-    )
+    elif msg == "bruh":
+        await message.channel.send(
+            f"{message.author.mention} 💀"
+        )
 
-elif msg in ["server dead"]:
-    await message.channel.send(
-        f"{message.author.mention} revive it then 😭"
-    )
+    elif msg == "damn":
+        await message.channel.send(
+            f"Calm down there {message.author.mention} 😂"
+        )
 
-elif msg in ["gm"]:
-    await message.channel.send(
-        f"Good morning {message.author.mention} ☀️"
-    )
+    elif msg == "bot":
+        await message.channel.send(
+            f"Yes {message.author.mention}? 🤖"
+        )
 
-elif msg in ["gn"]:
-    await message.channel.send(
-        f"Good night {message.author.mention} 🌙"
-    )
+    elif msg == "server dead":
+        await message.channel.send(
+            f"{message.author.mention} revive it then 😭"
+        )
 
-elif msg in ["fr"]:
-    await message.channel.send(
-        f"Real 💯"
-    )
+    elif msg == "gm":
+        await message.channel.send(
+            f"Good morning {message.author.mention} ☀️"
+        )
 
-elif msg in ["real"]:
-    await message.channel.send(
-        f"So real {message.author.mention} 💯"
-    )
+    elif msg == "gn":
+        await message.channel.send(
+            f"Good night {message.author.mention} 🌙"
+        )
 
-elif msg in ["w bot"]:
-    await message.channel.send(
-        f"Thanks {message.author.mention} ❤️"
-    )
+    elif msg == "fr":
+        await message.channel.send(
+            "Real 💯"
+        )
 
-elif msg in ["l bot"]:
-    await message.channel.send(
-        f"That hurts {message.author.mention} 😔"
-    )
+    elif msg == "real":
+        await message.channel.send(
+            f"So real {message.author.mention} 💯"
+        )
 
-elif msg in ["owner"]:
-    await message.channel.send(
-        f"My owner is amazing 😎"
-    )
+    elif msg == "w bot":
+        await message.channel.send(
+            f"Thanks {message.author.mention} ❤️"
+        )
 
-elif msg in ["can you code"]:
-    await message.channel.send(
-        f"Of course {message.author.mention} 💻"
-    )
+    elif msg == "l bot":
+        await message.channel.send(
+            f"That hurts {message.author.mention} 😔"
+        )
 
-elif msg in ["discord"]:
-    await message.channel.send(
-        f"Best platform ever 😎"
-    )
+    elif msg == "owner":
+        await message.channel.send(
+            "My owner is amazing 😎"
+        )
 
-elif msg in ["welcome"]:
-    await message.channel.send(
-        f"Glad to be here {message.author.mention} ❤️"
-    )
+    elif msg == "can you code":
+        await message.channel.send(
+            f"Of course {message.author.mention} 💻"
+        )
 
-elif msg in ["hmm"]:
-    await message.channel.send(
-        f"What are you thinking about {message.author.mention}? 🤔"
-    )
+    elif msg == "discord":
+        await message.channel.send(
+            "Best platform ever 😎"
+        )
 
-elif msg in ["sad"]:
-    await message.channel.send(
-        f"Cheer up {message.author.mention} ❤️"
-    )
+    elif msg == "welcome":
+        await message.channel.send(
+            f"Glad to be here {message.author.mention} ❤️"
+        )
 
-elif msg in ["happy"]:
-    await message.channel.send(
-        f"Love that energy {message.author.mention} 😄"
-    )
+    elif msg == "hmm":
+        await message.channel.send(
+            f"What are you thinking about {message.author.mention}? 🤔"
+        )
 
-elif msg in ["bored"]:
-    await message.channel.send(
-        f"Go chat with someone or play a game {message.author.mention} 🎮"
-    )
+    elif msg == "sad":
+        await message.channel.send(
+            f"Cheer up {message.author.mention} ❤️"
+        )
 
-elif msg in ["sleepy"]:
-    await message.channel.send(
-        f"Go get some rest {message.author.mention} 😴"
-    )
+    elif msg == "happy":
+        await message.channel.send(
+            f"Love that energy {message.author.mention} 😄"
+        )
 
-elif msg in ["food"]:
-    await message.channel.send(
-        f"Now I'm hungry 🍔"
-    )
+    elif msg == "bored":
+        await message.channel.send(
+            f"Go chat with someone or play a game {message.author.mention} 🎮"
+        )
 
-elif msg in ["music"]:
-    await message.channel.send(
-        f"Music makes everything better 🎵"
-    )
+    elif msg == "sleepy":
+        await message.channel.send(
+            f"Go get some rest {message.author.mention} 😴"
+        )
 
-elif msg in ["anime"]:
-    await message.channel.send(
-        f"Anime fans rise up 🔥"
-    )
+    elif msg == "food":
+        await message.channel.send(
+            "Now I'm hungry 🍔"
+        )
 
-elif msg in ["python"]:
-    await message.channel.send(
-        f"Python is awesome for Discord bots 🐍"
-    )
+    elif msg == "music":
+        await message.channel.send(
+            "Music makes everything better 🎵"
+        )
 
-elif msg in ["javascript", "js"]:
-    await message.channel.send(
-        f"JavaScript is powerful too ⚡"
-    )
+    elif msg == "anime":
+        await message.channel.send(
+            "Anime fans rise up 🔥"
+        )
 
-elif msg in ["what's up", "wassup"]:
-    await message.channel.send(
-        f"Nothing much {message.author.mention} 😎"
-    )
+    elif msg == "python":
+        await message.channel.send(
+            "Python is awesome for Discord bots 🐍"
+        )
 
-elif msg in ["test"]:
-    await message.channel.send(
-        f"Testing successful ✅"
-    )
+    elif msg in ["javascript", "js"]:
+        await message.channel.send(
+            "JavaScript is powerful too ⚡"
+        )
 
-elif msg in ["rip"]:
-    await message.channel.send(
-        f"Rest in peace 🕊️"
-    )
+    elif msg in ["what's up", "wassup"]:
+        await message.channel.send(
+            f"Nothing much {message.author.mention} 😎"
+        )
 
-elif msg in ["gg"]:
-    await message.channel.send(
-        f"GG {message.author.mention} 🎮"
-    )
+    elif msg == "test":
+        await message.channel.send(
+            "Testing successful ✅"
+        )
 
-elif msg in ["skill issue"]:
-    await message.channel.send(
-        f"😭😭😭"
-    )
+    elif msg == "rip":
+        await message.channel.send(
+            "Rest in peace 🕊️"
+        )
 
-guild_data = get_guild_settings(message.guild.id)
+    elif msg == "gg":
+        await message.channel.send(
+            f"GG {message.author.mention} 🎮"
+        )
+
+    elif msg == "skill issue":
+        await message.channel.send(
+            "😭😭😭"
+        )
+
+    # ==========================================
+    # GUILD SETTINGS
+    # ==========================================
+
+    guild_data = get_guild_settings(message.guild.id)
 
     # Anti-Link
     if guild_data["anti_link"] and re.search(URL_REGEX, message.content):
