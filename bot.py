@@ -921,7 +921,7 @@ async def timeout(
     await interaction.response.send_message(
         f"{member.mention} has been timed out for {minutes} minute(s)."
     )
-    await log_action(guild = interaction.guild, title = "⏳ Member Timed Out", description = "User was timed out by admin", color = discord.Color.yellow(), moderator = interaction.user, target = member, reason = "No reason given", action_taken = f"{member.mention} has been timed out for {minutes} minute(s)."
+    await log_action(guild = interaction.guild, title = "⏳ Member Timed Out", description = "User was timed out by admin", color = discord.Color.yellow(), moderator = interaction.user, target = member, reason = "No reason given", action_taken = f"{member.mention} has been timed out for {minutes} minute(s).")
 
 
 # CLEAR COMMAND
