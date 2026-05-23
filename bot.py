@@ -42,7 +42,7 @@ async def log_action(guild, title, description, color, moderator, target=None, r
     if not channel_id:
         return
     channel = guild.get_channel(channel_id)
-if channel:
+    if channel:
         embed = discord.Embed(title=title, description=description, color=color, timestamp=datetime.datetime.now())
         embed.add_field(name="Moderator", value=moderator.mention)
         if target: embed.add_field(name="Target", value=target.mention)
